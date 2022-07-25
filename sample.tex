@@ -1,0 +1,28 @@
+\documentclass{article}
+\def\mathhub{mhdir}
+% \usepackage{stex}
+\usepackage{stex,xcolor,stexthm}
+
+\begin{document}
+\begin{smodule}{GeometricSeries}
+\importmodule[smglom/calculus]{series}
+\importmodule[smglom/arithmetics]{realarith}
+\symdef{geometricSeries}[name=geometric-series]{\comp{S}}
+\begin{sdefinition}[for=geometricSeries]
+  The \definame{geometricSeries} is the \symname{?series}
+  \[\defeq{\geometricSeries}{\definiens{
+        \infinitesum{\svar{n}}{1}{
+          \realdivide[frac]{1}{
+            \realpower{2}{\svar{n}}
+        }}
+  }}.\]
+\end{sdefinition}
+\begin{sassertion}[name=geometricSeriesConverges,type=theorem]
+  The \symname{geometricSeries} \symname{converges} towards $1$.
+\end{sassertion}
+\end{smodule}
+\end{document}
+% \begin{smodule}[title={This is Some Module}]{SomeModule}
+% Hello World
+% \end{smodule}
+\end{document}

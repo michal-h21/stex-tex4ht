@@ -1,0 +1,75 @@
+% TeX4ht configuration file for stex.sty
+
+\ExplSyntaxOn
+
+%%%%%%%%%%%%%%%%%%%%%%
+% Put redefinitions of STeX macros in this part
+%%%%%%%%%%%%%%%%%%%%%%
+
+% suppress use of \pdfmark and other commands unvailable in the DVI mode
+\prg_set_conditional:Nnn \stex_html_backend: {p, T, F, TF} {
+  \prg_return_true:
+}
+
+% declare hooks inserted to the \symname and \Symname command
+% See https://www.kodymirus.cz/tex4ht-doc/ForDevelopers.html for details 
+
+\NewConfigure{symname}{2}
+% define helper \:symname command, which inserts hooks with the HTML code, and call the original command, which is saved in \o:cmdname:
+\ProvideDocumentCommand \:symname { O{} m }{%
+  \stex_get_symbol:n { #2 }
+  \l_stex_get_symbol_uri_str
+  \a:symname\o:symname:[#1]{#2}\b:symname
+}
+% this is a varian of \let, but with additional features
+\HLet\symname\:symname
+
+% use similar code for \Symname, we can reuse \a:symname and \b:symname,  as the HTML code can 
+% be same for both commands
+\ProvideDocumentCommand \:Symname { O{} m }{\a:symname\o:Symname:[#1]{#2}\b:symname}
+\HLet\Symname\:Symname
+
+\NewConfigure{definame}{2}
+% it seems that we need to reactivate and deactivate macros for this to work
+\stex_reactivate_macro:N \definame
+\ProvideDocumentCommand \:definame { O{} m } {\a:definame\o:definame:[#1]{#2}\b:definame}
+\HLet\definame\:definame
+\stex_deactivate_macro:Nn \definame {definition~environments}
+
+\stex_reactivate_macro:N \Definame
+\ProvideDocumentCommand \:Definame { O{} m } {\a:definame\o:Definame:[#1]{#2}\b:definame}
+\HLet\Definame\:Definame
+\stex_deactivate_macro:Nn \Definame {definition~environments}
+
+\ExplSyntaxOff
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+% Output formats support
+%%%%%%%%%%%%%%%%%%%%%%%%%
+% Support for HTML
+\:CheckOption{html5}
+\:CheckOption{xhtml}
+\if:Option
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Put configurations for the HTML output here
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% \ConfigureEnv can be used to add tags around environments
+% we need to handle paragraphs in block elements
+% see https://www.kodymirus.cz/tex4ht-doc/Configurations.html#paragraph-handling
+\ConfigureEnv{smodule}{\ifvmode\IgnorePar\fi\EndP\HCode{<section class="smodule">}}
+{\ifvmode\IgnorePar\fi\EndP\HCode{</section>\Hnewline}}{}{}
+
+\ConfigureEnv{sdefinition}{\ifvmode\IgnorePar\fi\EndP\HCode{<section class="sdefinition">}}
+{\ifvmode\IgnorePar\fi\EndP\HCode{</section>\Hnewline}}{}{}
+
+\ConfigureEnv{sassertion}{\ifvmode\IgnorePar\fi\EndP\HCode{<section class="sassertion">}}
+{\ifvmode\IgnorePar\fi\EndP\HCode{</section>\Hnewline}}{}{}
+
+% insert <em class="symname"> around \symname
+% \NoFonts disables extra formatting inserted by TeX4ht for italic text
+\Configure{symname}{\HCode{<em class="symname" data-property="">}\NoFonts}{\EndNoFonts\HCode{</em>}}
+\Configure{definame}{\HCode{<strong class="definame">}\NoFonts}{\EndNoFonts\HCode{</strong>}}
+\fi
+\Hinput{stex}
+\endinput
