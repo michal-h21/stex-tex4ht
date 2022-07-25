@@ -18,7 +18,6 @@
 % define helper \:symname command, which inserts hooks with the HTML code, and call the original command, which is saved in \o:cmdname:
 \ProvideDocumentCommand \:symname { O{} m }{%
   \stex_get_symbol:n { #2 }
-  \l_stex_get_symbol_uri_str
   \a:symname\o:symname:[#1]{#2}\b:symname
 }
 % this is a varian of \let, but with additional features
@@ -68,7 +67,7 @@
 
 % insert <em class="symname"> around \symname
 % \NoFonts disables extra formatting inserted by TeX4ht for italic text
-\Configure{symname}{\HCode{<em class="symname" data-property="">}\NoFonts}{\EndNoFonts\HCode{</em>}}
+\Configure{symname}{\HCode{<em class="symname"  data-property="stex:symname" data-resource="\csname l_stex_get_symbol_uri_str\endcsname">}\NoFonts}{\EndNoFonts\HCode{</em>}}
 \Configure{definame}{\HCode{<strong class="definame">}\NoFonts}{\EndNoFonts\HCode{</strong>}}
 \fi
 \Hinput{stex}
